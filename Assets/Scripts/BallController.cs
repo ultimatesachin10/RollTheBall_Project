@@ -13,13 +13,14 @@ public class BallController : MonoBehaviour
     [SerializeField] private Text Timeleft;
     public int Duration;
     private int remaingDuration;
+    [SerializeField] Joystick joystick;
+    [SerializeField] AudioSource source;
+    [SerializeField] AudioClip Clip_CoinPickup;
 
   //  [SerializeField] private GameObject _BonusItems;
 
     private Rigidbody _rb;
     private int _count;
-    private float _movementX;
-    private float _movementY;
 
     // Start is called before the first frame update
     private void Start()
@@ -29,12 +30,6 @@ public class BallController : MonoBehaviour
         _count = 0;
         SetCountScore();
     }
-    void OnMove(InputValue movementValue)
-    {
-        Vector2 movementVector = movementValue.Get<Vector2>();
-        _movementX = movementVector.x;
-        _movementY = movementVector.y;
-    }
 
     void SetCountScore()
     {
@@ -42,20 +37,30 @@ public class BallController : MonoBehaviour
         if (_count >= 210)
         {
             //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
-            SceneManager.LoadScene(2);
+            SceneManager.LoadScene(2);        
         }
     }
 
     // Update is called once per frame
     private void Update()
     {
-        Vector3 movement = new Vector3(_movementX, 0.0f, _movementY);
+        float _movementX = Input.GetAxis("Horizontal");
+        float _movementY = Input.GetAxis("Vertical");
+        
+         float movementX = joystick.Horizontal;
+         float movementY = joystick.Vertical;
+        
+
+        Vector3 movement = new Vector3(_movementX, 0.0f, _movementY);       
         _rb.AddForce(movement * speed * Time.deltaTime, ForceMode.Impulse);
+
+        Vector3 jmovement = new Vector3(movementX, 0.0f, movementY);
+        _rb.AddForce(jmovement * speed * Time.deltaTime, ForceMode.Impulse);
 
         if (remaingDuration <= 0)
         {
             //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
-            SceneManager.LoadScene(3);
+            SceneManager.LoadScene(3);           
         }
     }
 
@@ -66,6 +71,7 @@ public class BallController : MonoBehaviour
             other.gameObject.SetActive(false);
             _count = _count + 10;
             SetCountScore();
+            source.PlayOneShot(Clip_CoinPickup);
         }
 /*
         if (_count >= 100)

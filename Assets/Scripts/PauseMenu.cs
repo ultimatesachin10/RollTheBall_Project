@@ -14,11 +14,13 @@ public class PauseMenu : MonoBehaviour
     {
         PausedMenu.SetActive(true);
         Time.timeScale = 0f;
+        AudioListener.pause = true;
     }
 
     public void Resume()
     {
         PausedMenu.SetActive(false);
         Time.timeScale = 1f;
+        AudioListener.pause = false;
     }
 }
